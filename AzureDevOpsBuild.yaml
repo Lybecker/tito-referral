@@ -1,0 +1,33 @@
+pool:
+  vmImage: 'Ubuntu 16.04' # other options: 'macOS-10.13', 'vs2017-win2016'
+  
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+    feedsToUse: config
+    nugetConfigPath: NuGet.Config
+  displayName: 'dotnet restore'
+
+- script: |
+    dotnet build tito-referral.sln --configuration $(buildConfiguration)
+  displayName: 'dotnet build'
+
+- script: |
+    dotnet test WebAPI.Tests/WebAPI.Tests.csproj --configuration $(buildConfiguration) --logger trx
+  displayName: 'dotnet test'
+
+- task: PublishTestResults@2
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
+
+- script: |
+    dotnet publish WebAPI/WebAPI.csproj --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
+  displayName: 'dotnet publish'
+
+- task: PublishBuildArtifacts@1
