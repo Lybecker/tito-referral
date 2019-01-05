@@ -24,7 +24,6 @@ namespace WebAPI
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // The normal way of configuring does not work with dependencies to middelware
             //services.Configure<TitoConfiguration>(Configuration.GetSection("Tito"));
             //services.PostConfigure<TitoConfiguration>(settings =>
             //{
