@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WebAPI.Configuration;
 using WebAPI.Middelware;
 using WebAPI.Services;
+using WebAPI.Validation;
 
 namespace WebAPI
 {
@@ -23,10 +24,18 @@ namespace WebAPI
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            // The normal way of configuring does not work with dependencies to middelware
+            //services.Configure<TitoConfiguration>(Configuration.GetSection("Tito"));
+            //services.PostConfigure<TitoConfiguration>(settings =>
+            //{
+            //    settings.ValidateAndFailIfError();
+            //});
+
             var config = new TitoConfiguration();
             Configuration.Bind("Tito", config);
-            services.AddSingleton<ITitoConfiguration>(config);
-            
+            config.ValidateAndFailIfError();
+            services.AddSingleton<TitoConfiguration>(config);
+
             services.AddHttpClient<ITitoClient, TitoClient>();
             services.AddSingleton<ITitoRequestVerifyer, TitoRequestVerifyer>();
             services.AddSingleton<IDiscount_CodeBuilder, Discount_CodeBuilder>();

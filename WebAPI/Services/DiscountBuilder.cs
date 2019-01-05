@@ -5,9 +5,9 @@ namespace WebAPI.Services
 {
     public class Discount_CodeBuilder : IDiscount_CodeBuilder
     {
-        private readonly ITitoConfiguration _config;
+        private readonly TitoConfiguration _config;
 
-        public Discount_CodeBuilder(ITitoConfiguration config)
+        public Discount_CodeBuilder(TitoConfiguration config)
         {
             _config = config;
         }

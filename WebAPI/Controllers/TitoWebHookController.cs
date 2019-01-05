@@ -14,12 +14,12 @@ namespace WebAPI.Controllers
     public class TitoWebHookController : ControllerBase
     {
         private readonly ITitoClient _titoClient;
-        private readonly ITitoConfiguration _config;
+        private readonly TitoConfiguration _config;
         private readonly IDiscount_CodeBuilder _discount_CodeBuilder;
         private readonly ITitoTicketDiscountLinkGenerator _titoTicketDiscountLinkGenerator;
         private readonly ILogger<TitoWebHookController> _logger;
 
-        public TitoWebHookController(ITitoClient titoClient, ITitoConfiguration config, IDiscount_CodeBuilder discount_CodeBuilder, ITitoTicketDiscountLinkGenerator titoTicketDiscountLinkGenerator, ILogger<TitoWebHookController> logger)
+        public TitoWebHookController(ITitoClient titoClient, TitoConfiguration config, IDiscount_CodeBuilder discount_CodeBuilder, ITitoTicketDiscountLinkGenerator titoTicketDiscountLinkGenerator, ILogger<TitoWebHookController> logger)
         {
             _titoClient = titoClient;
             _config = config;

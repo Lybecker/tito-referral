@@ -5,9 +5,9 @@ namespace WebAPI.Services
 {
     public class TitoTicketDiscountLinkGenerator : ITitoTicketDiscountLinkGenerator
     {
-        private readonly ITitoConfiguration _config;
+        private readonly TitoConfiguration _config;
 
-        public TitoTicketDiscountLinkGenerator(ITitoConfiguration config)
+        public TitoTicketDiscountLinkGenerator(TitoConfiguration config)
         {
             _config = config;
         }

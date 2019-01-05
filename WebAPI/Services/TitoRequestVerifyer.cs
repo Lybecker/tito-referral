@@ -9,7 +9,7 @@ namespace WebAPI.Services
     public class TitoRequestVerifyer : ITitoRequestVerifyer
     {
         public readonly string _webHookSecurityToken;
-        public TitoRequestVerifyer(ITitoConfiguration config)
+        public TitoRequestVerifyer(TitoConfiguration config)
         {
             _webHookSecurityToken = config.Event.WebHookSecurityToken;
         }

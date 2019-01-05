@@ -14,14 +14,14 @@ namespace WebAPI.Services
     // Using the HttpClientFactory https://www.talkingdotnet.com/3-ways-to-use-httpclientfactory-in-asp-net-core-2-1/
     public class TitoClient : ITitoClient
     {
-        private readonly ITitoConfiguration _config;
+        private readonly TitoConfiguration _config;
         private readonly ILogger<TitoClient> _logger;
 
         public string AccountName { get; set; }
         private readonly HttpClient _client;
         private readonly JsonSerializerSettings _jsonSerializerSettings;
 
-        public TitoClient(HttpClient httpClient, ITitoConfiguration config, ILogger<TitoClient> logger)
+        public TitoClient(HttpClient httpClient, TitoConfiguration config, ILogger<TitoClient> logger)
         {
             _config = config;
             _logger = logger;
@@ -75,11 +75,5 @@ namespace WebAPI.Services
                 return root.discount_code;
             }
         }
-    }
-
-
-    class RootDiscount_Code
-    {
-        public Discount_Code discount_code { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using WebAPI.Configuration;
+using WebAPI.Model;
 using WebAPI.Services;
 
 namespace TitoReferral.TestConsole
@@ -16,7 +17,7 @@ namespace TitoReferral.TestConsole
 
             try
             {
-                ITitoConfiguration config = LoadConfiguration(); 
+                TitoConfiguration config = LoadConfiguration(); 
 
                 var tito = new TitoClient(new HttpClient(), config, null);
                 //Console.WriteLine(tito.GetEventsAsync().Result);
