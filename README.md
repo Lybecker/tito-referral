@@ -15,7 +15,9 @@ To figure out how many referrals each attendee has, compare the attendee code wi
 
 # Technology
 
-The solution is build as a ASP.NET Core 2.2 Web API solution.
+The solution is build as a ASP.NET Core 2.2 Web API solution running on Linux, Mac & Windows.
+
+[![Build Status](https://lybecker.visualstudio.com/Microsoft/_apis/build/status/tito-referral?branchName=master)](https://lybecker.visualstudio.com/Microsoft/_build/latest?definitionId=22?branchName=master)
 
 # Integration
 We integrate with the [ti.to Admin API](https://ti.to/docs/api/).
