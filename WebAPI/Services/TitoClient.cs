@@ -58,7 +58,9 @@ namespace WebAPI.Services
 
         public async Task<Discount_Code> CreateDiscountCodeAsync(string eventName, Discount_Code discount)
         {
-            var json = JsonConvert.SerializeObject(discount, _jsonSerializerSettings);
+            var rootRequest = new RootDiscount_Code() { discount_code = discount };
+
+            var json = JsonConvert.SerializeObject(rootRequest, _jsonSerializerSettings);
 
             using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
             {
@@ -71,8 +73,8 @@ namespace WebAPI.Services
                 string jsonResponse = await response.Content.ReadAsStringAsync();
                 response.Dispose();
 
-                var root = JsonConvert.DeserializeObject<RootDiscount_Code>(jsonResponse, _jsonSerializerSettings);
-                return root.discount_code;
+                var rootResponse = JsonConvert.DeserializeObject<RootDiscount_Code>(jsonResponse, _jsonSerializerSettings);
+                return rootResponse.discount_code;
             }
         }
     }

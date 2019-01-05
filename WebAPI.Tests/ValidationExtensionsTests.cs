@@ -17,11 +17,8 @@ namespace WebAPI.Tests
                 {
                     EventName = "anders-test",
                     WebHookSecurityToken = "G4Ajq-hVDgg50Ixj5ls1MA",
-                    Discount = new Discount()
-                    {
-                        Pct = false,
-                        Value = 10
-                    }
+                    DiscountPct = false,
+                    DiscountValue = 10
                 }
             };
 

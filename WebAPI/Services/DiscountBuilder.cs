@@ -16,9 +16,9 @@ namespace WebAPI.Services
         {
             return new Discount_Code() {
                 code = GenerateCode(ticketCompletedEvent),
-                type = _config.Event.Discount.Pct ? DiscountTypes.PercentOffDiscountCode : DiscountTypes.MoneyOffDiscountCode,
-                value = _config.Event.Discount.Value,
-                release_ids = _config.Event.Discount.TicketIds
+                type = _config.Event.DiscountPct ? DiscountTypes.PercentOffDiscountCode : DiscountTypes.MoneyOffDiscountCode,
+                value = _config.Event.DiscountValue,
+                release_ids = _config.Event.TicketIds
             };
         }
 

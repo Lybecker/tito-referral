@@ -24,13 +24,8 @@ namespace WebAPI.Configuration
         [Required]
         public string WebHookSecurityToken { get; set; }
         [Required]
-        public Discount Discount { get; set; }
-    }
-
-    public class Discount
-    {
-        public bool Pct { get; set; }
-        public decimal Value { get; set; }
+        public bool DiscountPct { get; set; }
+        public decimal DiscountValue { get; set; }
         public string[] TicketIds { get; set; }
     }
 }
