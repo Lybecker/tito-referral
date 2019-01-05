@@ -2,7 +2,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using WebAPI.Configuration;
-using WebAPI.Model;
 
 namespace WebAPI.Services
 {
@@ -32,7 +31,7 @@ namespace WebAPI.Services
             using (var hash = new HMACSHA256(keyBytes))
                 hashBytes = hash.ComputeHash(textBytes);
 
-            return System.Convert.ToBase64String(hashBytes);
+            return Convert.ToBase64String(hashBytes);
         }
     }
 }
