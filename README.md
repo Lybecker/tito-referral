@@ -1,7 +1,7 @@
 # ti.to referral tracker
-[ti.to](https://ti.to/) is an event ticketing system. We used it at [Copenhagen .NET Usergroup](https://cnug.dk/) when we arrange events and conferences like [MicroCPH.dk](https://microcph.dk/) or [Intelligent Cloud Conference](https://intelligentcloud.dk/).
+[ti.to](https://ti.to/) is an event ticketing system. We use it at [Copenhagen .NET Usergroup](https://cnug.dk/) when we arrange events and conferences like [MicroCPH.dk](https://microcph.dk/) or [Intelligent Cloud Conference](https://intelligentcloud.dk/).
 
-An easy way to attract attention to an event is using a referral program, where both the attendee and the potential attendee gains a benefit, then there is a greater chance that the attendee will share the event with friends and collegues.
+An easy way to attract attention to an event is by using a referral program, where both the attendee and the potential attendee gain a benefit, providing an incentive for the attendee to share the event with friends and collegues.
 
 ## Referral tracing
 
@@ -9,7 +9,7 @@ An easy way to attract attention to an event is using a referral program, where 
 2. ti.to webhook calls the service
 3. The service creates a ti.to Discount with code  `<referral attendee code>-<referral attendee first name>` e.g. YAZR-1-John 
 4. The service creates a direct link to the tickets with the Discount applied
-5. Sends an email to the attendee with the direct ticket link
+5. The service sends an email to the attendee with the direct ticket link
 
 To figure out how many referrals each attendee has, compare the attendee code with the discount code. ti.to keeps track of how many times a Discount has been used.
 
