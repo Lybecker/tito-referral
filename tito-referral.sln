@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D5070AEA-F200-4FCF-9BF7-C29873FE4CF6}"
 	ProjectSection(SolutionItems) = preProject
 		AzureDevOpsBuild.yaml = AzureDevOpsBuild.yaml
+		NuGet.Config = NuGet.Config
 	EndProjectSection
 EndProject
 Global

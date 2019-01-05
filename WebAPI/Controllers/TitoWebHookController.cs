@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -63,11 +65,42 @@ namespace WebAPI.Controllers
 
             var directDiscountLink = _titoTicketDiscountLinkGenerator.DiscountTicketLink(discount);
 
+
+            var message = $"Thanks {ticketCompletedEvent.First_name} for joining us at MicroCPH conference, we appriciate your support for out community event. We would like your friends to join too, so please share this link with referral code {directDiscountLink}, then we will reward your friends with 10% discount and a specialied MicroCPH beer, exclusively for MicroCPH. Please use #MicroCPH when using social media. Kind Regards, the MicroCPH organizers.";
+
+
             //TODO: send email
             //TODO: logging/monitoring
             //TODO: validate config
 
             return Ok();
+        }
+    }
+
+    public class EmailSender
+    {
+        private readonly TitoConfiguration _config;
+
+        public EmailSender(TitoConfiguration config)
+        {
+            _config = config;
+        }
+        public async Task SendAsync()
+        {
+            var client = new SmtpClient("mysmtpserver")
+            {
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential("username", "password")
+            };
+
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress("whoever@me.com")
+            };
+            mailMessage.To.Add("receiver@me.com");
+            mailMessage.Subject = "subject";
+            mailMessage.Body = "body";
+            await client.SendMailAsync(mailMessage);
         }
     }
 }
