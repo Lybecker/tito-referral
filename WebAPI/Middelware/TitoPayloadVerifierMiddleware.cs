@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -26,38 +25,32 @@ namespace WebAPI.Middelware
 
         public async Task Invoke(HttpContext context)
         {
-            // Get tito-signature header
-            var signatureHeader = context.Request.Headers["tito-signature"];
-
-            if (signatureHeader.Any() == false)
-            {
-                RejectAsync(context);
-                _logger.LogWarning("Request without tito-signature");
-                return;
-            }
-            var signature = signatureHeader.ToString();
-
-            string payload;
-
             try
             {
                 context.Request.EnableRewind();
                 var body = context.Request.Body;
-                
+
                 var buffer = new byte[Convert.ToInt32(context.Request.ContentLength)];
 
                 await context.Request.Body.ReadAsync(buffer, 0, buffer.Length);
 
-                payload = Encoding.UTF8.GetString(buffer);
-
                 body.Position = 0;
                 context.Request.Body = body;
-                
-                if (!_titoRequestVerifyer.VerifyPayload(payload, signature))
+
+                if (RequiresValidation(context, buffer))
                 {
-                    RejectAsync(context);
-                    _logger.LogWarning("Request with invalid tito-signature");
-                    return;
+                    // Get tito-signature header
+                    var signatureHeader = context.Request.Headers["tito-signature"];
+                    var signature = signatureHeader.ToString();
+
+                    string payload = Encoding.UTF8.GetString(buffer);
+
+                    if (!_titoRequestVerifyer.VerifyPayload(payload, signature))
+                    {
+                        RejectAsync(context);
+                        _logger.LogWarning("Request with invalid tito-signature");
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
@@ -67,6 +60,11 @@ namespace WebAPI.Middelware
             }
 
             await _next.Invoke(context);
+        }
+
+        private static bool RequiresValidation(HttpContext context, byte[] buffer)
+        {
+            return context.Request.Method != "Get" && buffer.Length > 0;
         }
 
         private static async void RejectAsync(HttpContext context)
