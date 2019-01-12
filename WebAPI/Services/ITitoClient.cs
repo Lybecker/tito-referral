@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using WebAPI.Model;
+using WebAPI.Model.Ticket;
 
 namespace WebAPI.Services
 {
@@ -8,5 +10,6 @@ namespace WebAPI.Services
         Task<Discount_Code> CreateDiscountCodeAsync(string eventName, Discount_Code discount);
         Task<Discount_Code> GetDiscountCodeAsync(string eventName, int id);
         Task<string> GetEventsAsync();
+        Task<IEnumerable<Ticket>> GetTicketsAsync(string eventName);
     }
 }

@@ -2,12 +2,14 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using WebAPI.Configuration;
 using WebAPI.Model;
+using WebAPI.Model.Ticket;
 
 namespace WebAPI.Services
 {
@@ -76,6 +78,26 @@ namespace WebAPI.Services
                 var rootResponse = JsonConvert.DeserializeObject<RootDiscount_Code>(jsonResponse, _jsonSerializerSettings);
                 return rootResponse.discount_code;
             }
+        }
+
+        public async Task<IEnumerable<Ticket>> GetTicketsAsync(string eventName)
+        {
+            int? page = 1;
+
+            var tickets = new List<Ticket>();
+
+            while (page.HasValue)
+            {
+                var jsonResponse = await _client.GetStringAsync($"{AccountName}/{eventName}/tickets?page={page}");
+
+                var root = JsonConvert.DeserializeObject<RootTicket>(jsonResponse, _jsonSerializerSettings);
+
+                tickets.AddRange(root.tickets);
+
+                page = root.meta.next_page;
+            }
+
+            return tickets;
         }
     }
 }
