@@ -1,4 +1,5 @@
-﻿using WebAPI.Configuration;
+﻿using System;
+using WebAPI.Configuration;
 using WebAPI.Model;
 
 namespace WebAPI.Services
@@ -6,6 +7,7 @@ namespace WebAPI.Services
     public class Discount_CodeBuilder : IDiscount_CodeBuilder
     {
         private readonly TitoConfiguration _config;
+        private readonly char _seperator = '-';
 
         public Discount_CodeBuilder(TitoConfiguration config)
         {
@@ -22,15 +24,22 @@ namespace WebAPI.Services
             };
         }
 
-        private static string GenerateCode(TicketCompletedEvent ticketCompletedEvent)
+        private string GenerateCode(TicketCompletedEvent ticketCompletedEvent)
         {
             string name = ticketCompletedEvent.First_name;
 
             if (string.IsNullOrEmpty(name))
                 name = "JohnDoe";
 
+            return $"{ticketCompletedEvent.reference}{_seperator}{name}";
+        }
 
-            return $"{ticketCompletedEvent.reference}-{name}";
+        public string GetAttendeeReferrerCode(string discountCode)
+        {
+            if (!discountCode.Contains(_seperator))
+                throw new ArgumentException($"{nameof(discountCode)} does not contain a '{_seperator}' seperator.");
+
+            return discountCode.Substring(0, discountCode.LastIndexOf(_seperator));
         }
     }
 }
