@@ -7,7 +7,7 @@ namespace WebAPI.Services
     public class Discount_CodeBuilder : IDiscount_CodeBuilder
     {
         private readonly TitoConfiguration _config;
-        private readonly char _seperator = '-';
+        private readonly char _seperator = '_';
 
         public Discount_CodeBuilder(TitoConfiguration config)
         {
