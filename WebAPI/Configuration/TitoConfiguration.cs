@@ -15,6 +15,12 @@ namespace WebAPI.Configuration
         public string ApiToken { get; set; }
         [Required, ValidateObject]
         public Event Event { get; set; }
+        [Required]
+        public string ReplyEmail { get; set; }
+        [Required]
+        public string EmailUsername { get; set; }
+        [Required]
+        public string EmailPassword { get; set; }
     }
 
     public class Event

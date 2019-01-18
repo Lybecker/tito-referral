@@ -13,6 +13,9 @@ namespace WebAPI.Tests
             {
                 AccountName = "CNUG",
                 ApiToken = "ABC123",
+                ReplyEmail = "na@na.com",
+                EmailUsername = "na",
+                EmailPassword = "P@ssword",
                 Event = new Event()
                 {
                     EventName = "anders-test",
