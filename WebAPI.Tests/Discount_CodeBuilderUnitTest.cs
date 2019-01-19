@@ -8,7 +8,7 @@ namespace WebAPI.Tests
     public class Discount_CodeBuilderUnitTest
     {
         [Fact]
-        public void VerifyPayload_Success()
+        public void Create_Success()
         {
             var config = new TitoConfiguration()
             {
@@ -31,9 +31,7 @@ namespace WebAPI.Tests
 
             var discountCode = sut.Build(ticketCompletedEvent);
 
-            var referrerCode = sut.GetAttendeeReferrerCode(discountCode.code);
-
-            Assert.Equal(ticketCompletedEvent.reference, referrerCode);
+            Assert.Equal(ticketCompletedEvent.reference, discountCode.code);
         }
     }
 }
