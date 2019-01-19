@@ -5,5 +5,6 @@ namespace WebAPI.Services
     public interface ITitoTicketDiscountLinkGenerator
     {
         string DiscountTicketLink(Discount_Code discount);
+        string DiscountTicketLink(string discountCode);
     }
 }

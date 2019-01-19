@@ -14,7 +14,12 @@ namespace WebAPI.Services
 
         public string DiscountTicketLink(Discount_Code discount)
         {
-            return $"https://ti.to/{_config.AccountName}/{_config.Event.EventName}/discount/{discount.code}";
+            return DiscountTicketLink(discount.code);
+        }
+
+        public string DiscountTicketLink(string discountCode)
+        {
+            return $"https://ti.to/{_config.AccountName}/{_config.Event.EventName}/discount/{discountCode}";
         }
     }
 }
