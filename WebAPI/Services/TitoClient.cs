@@ -58,7 +58,7 @@ namespace WebAPI.Services
             return root.discount_code;
         }
 
-        public async Task<Discount_Code> CreateDiscountCodeAsync(string eventName, Discount_Code discount)
+        public async Task<(Discount_Code, bool)> CreateDiscountCodeAsync(string eventName, Discount_Code discount)
         {
             var rootRequest = new RootDiscount_Code() { discount_code = discount };
 
@@ -66,18 +66,38 @@ namespace WebAPI.Services
 
             using (var content = new StringContent(json, Encoding.UTF8, "application/json"))
             {
-                var response = await _client.PostAsync($"{AccountName}/{eventName}/discount_codes/",
-                    content);
+                using (var response = await _client.PostAsync($"{AccountName}/{eventName}/discount_codes/", content))
+                {
 
-                if (!response.IsSuccessStatusCode)
-                    return null;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var dc = new Discount_Code { code = discount.code };
+                        var alreadyExists = await DiscountCodeAlreadyExistsAsync(response);
+                        return (dc, alreadyExists);
+                    }
 
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                response.Dispose();
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
 
-                var rootResponse = JsonConvert.DeserializeObject<RootDiscount_Code>(jsonResponse, _jsonSerializerSettings);
-                return rootResponse.discount_code;
+                    var rootResponse = JsonConvert.DeserializeObject<RootDiscount_Code>(jsonResponse, _jsonSerializerSettings);
+                    return (rootResponse.discount_code, false);
+                }
             }
+        }
+
+        private async Task<bool> DiscountCodeAlreadyExistsAsync(HttpResponseMessage response)
+        {
+            if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+            {
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                var rootResponse = JsonConvert.DeserializeObject<RootErrors>(jsonResponse, _jsonSerializerSettings);
+                if (rootResponse?.Errors?.Code.Length > 0)
+                {
+                    return rootResponse.Errors.Code[0].Equals("has already been taken", StringComparison.InvariantCultureIgnoreCase);
+                }
+            }
+
+            return false;
         }
 
         public async Task<IEnumerable<Ticket>> GetTicketsAsync(string eventName)

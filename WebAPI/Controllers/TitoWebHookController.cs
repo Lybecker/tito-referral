@@ -1,7 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -19,14 +18,16 @@ namespace WebAPI.Controllers
         private readonly TitoConfiguration _config;
         private readonly IDiscount_CodeBuilder _discount_CodeBuilder;
         private readonly ITitoTicketDiscountLinkGenerator _titoTicketDiscountLinkGenerator;
+        private readonly IMailSender _mailSender;
         private readonly ILogger<TitoWebHookController> _logger;
 
-        public TitoWebHookController(ITitoClient titoClient, TitoConfiguration config, IDiscount_CodeBuilder discount_CodeBuilder, ITitoTicketDiscountLinkGenerator titoTicketDiscountLinkGenerator, ILogger<TitoWebHookController> logger)
+        public TitoWebHookController(ITitoClient titoClient, TitoConfiguration config, IDiscount_CodeBuilder discount_CodeBuilder, ITitoTicketDiscountLinkGenerator titoTicketDiscountLinkGenerator, IMailSender mailSender, ILogger<TitoWebHookController> logger)
         {
             _titoClient = titoClient;
             _config = config;
             _discount_CodeBuilder = discount_CodeBuilder;
             _titoTicketDiscountLinkGenerator = titoTicketDiscountLinkGenerator;
+            _mailSender = mailSender;
             _logger = logger;
         }
 
@@ -61,46 +62,54 @@ namespace WebAPI.Controllers
 
             var discount = _discount_CodeBuilder.Build(ticketCompletedEvent);
 
-            discount = await _titoClient.CreateDiscountCodeAsync(eventName, discount);
+            bool discountAlreadyExists = false; // re-assigned ticket
+
+            (discount, discountAlreadyExists) = await _titoClient.CreateDiscountCodeAsync(eventName, discount);
 
             var directDiscountLink = _titoTicketDiscountLinkGenerator.DiscountTicketLink(discount);
 
+            var map = new Dictionary<string, string>() {
+                    { "{firstName}", ticketCompletedEvent.First_name },
+                    { "{directDiscountLink}", directDiscountLink }
+                };
 
-            var message = $"Thanks {ticketCompletedEvent.First_name} for joining us at MicroCPH conference, we appriciate your support for out community event. We would like your friends to join too, so please share this link with referral code {directDiscountLink}, then we will reward your friends with 10% discount and a specialied MicroCPH beer, exclusively for MicroCPH. Please use #MicroCPH when using social media. Kind Regards, the MicroCPH organizers.";
+            await _mailSender.SendAsync(ticketCompletedEvent.Email, map,
+                subject: "We look forward to seeing you, please help spread the word about the MicroCPH conference",
+                templateName: "Referral Template");
 
+            if (IsValidReferral(ticketCompletedEvent) && !discountAlreadyExists)
+            {
+                var referrerCode = ticketCompletedEvent.discount_code_used;
 
-            //TODO: send email
-            //TODO: logging/monitoring
-            //TODO: validate config
+                var tickets = await _titoClient.GetTicketsAsync(eventName);
+
+                var referrer = tickets.FirstOrDefault(x => x.reference.Equals(referrerCode, StringComparison.InvariantCultureIgnoreCase));
+
+                if (referrer != null)
+                {
+                    // send email to referrer to say thanks
+                    map = new Dictionary<string, string>() {
+                        { "{firstName}", referrer.first_name },
+                        { "{attendee_first_name}", ticketCompletedEvent.First_name },
+                        { "{directDiscountLink}", _titoTicketDiscountLinkGenerator.DiscountTicketLink(referrerCode) }
+                    };
+
+                    await _mailSender.SendAsync(referrer.email, map,
+                        subject: "You referred one. Thanks!",
+                        templateName: "Referral Thanks");
+                }
+            }
 
             return Ok();
         }
-    }
 
-    public class EmailSender
-    {
-        private readonly TitoConfiguration _config;
-
-        public EmailSender(TitoConfiguration config)
+        private bool IsValidReferral(TicketCompletedEvent ticketCompletedEvent)
         {
-            _config = config;
-        }
-        public async Task SendAsync()
-        {
-            var client = new SmtpClient("mysmtpserver")
-            {
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential("username", "password")
-            };
+            if (string.IsNullOrEmpty(ticketCompletedEvent.discount_code_used))
+                return false;
 
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress("whoever@me.com")
-            };
-            mailMessage.To.Add("receiver@me.com");
-            mailMessage.Subject = "subject";
-            mailMessage.Body = "body";
-            await client.SendMailAsync(mailMessage);
+            // The ticket purchased must be applicable
+            return _config.Event.TicketIds.Contains(ticketCompletedEvent.release_slug);
         }
     }
 }

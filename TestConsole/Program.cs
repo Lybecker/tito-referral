@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Net.Http;
 using WebAPI.Configuration;
 using WebAPI.Model;
@@ -17,18 +18,15 @@ namespace TitoReferral.TestConsole
 
             try
             {
-                TitoConfiguration config = LoadConfiguration(); 
+                TitoConfiguration config = LoadConfiguration();
+                var sender = new GmailSender(config, null);
 
-                var tito = new TitoClient(new HttpClient(), config, null);
-                //Console.WriteLine(tito.GetEventsAsync().Result);
+                var map = new Dictionary<string, string>() {
+                    {"{firstName}", "Anders" },
+                    {"{directDiscountLink}","http://dr.dk" }
+                };
 
-                //var discount = new Discount_Code() { code = "fisk2", type = DiscountTypes.MoneyOffDiscountCode, value = 1 };
-                //discount.release_ids = new[] { "53qhmtt-c5q", "7khfdtb0mso" };
-                //var r = tito.CreateDiscountCodeAsync(config.Event.EventName, discount).Result;
-
-                var dis = tito.GetDiscountCodeAsync(config.Event.EventName, 6783926).Result;
-                var generator = new TitoTicketDiscountLinkGenerator(config);
-                var link = generator.DiscountTicketLink(dis);
+                sender.SendAsync(args[0], map, "test mail", "Referral Template").Wait();
             }
             catch (Exception ex)
             {
