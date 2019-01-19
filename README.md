@@ -25,6 +25,7 @@ The solution is build as a ASP.NET Core 2.2 Web API solution running on Linux, M
 ## Hosting
 All you need is a web server. No database or similar.
 
+At startup the configuration is validated and the process will fail without a valid configuration. If hosting in Azure Web Apps, a simple way of getting detailed error messages is adding `ASPNETCORE_DETAILEDERRORS = true` in the application settings.
 
 # Integration
 We integrate with the [ti.to Admin API](https://ti.to/docs/api/).
@@ -32,6 +33,7 @@ We integrate with the [ti.to Admin API](https://ti.to/docs/api/).
  - Create a unique [discount](https://ti.to/docs/api/admin/#discount-codes) for each attendee, they can use as referral
  - Create a [direct ticket link with discount](https://ti.to/docs/sharing_urls)
  - Gmail is used for sending emails.
+ - [Azure Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) is used for tracing and logging.
 
 # Security
 The solution verifies the webhook payload via the HTTP header tito-signature by using HMAC digest with SHA2 in the `TitoPayloadVerifierMiddleware` for all Web API requests. The security token used as key can be found under Customice | Webhooks in the ti.to admin portal. 
@@ -39,7 +41,7 @@ The solution verifies the webhook payload via the HTTP header tito-signature by 
 To access the ti.to Admin API an API token is needed. To get your [API Token go here](https://id.tito.io/).
 
 # Configuration
-Be aware that slugs are case sensitive.
+The configuration is validated at startup and the process will fail without a valid configuration.
 ```
 {
   "Tito": {
@@ -59,7 +61,9 @@ Be aware that slugs are case sensitive.
     }
   }
 }
+
 ```
+Be aware that slugs are case sensitive.
 
 To find the TicketIds (called releases at API level), go to Tickets, select a ticket. The URL will include the TicketId e.g. `https://ti.to/cnug/my-conf-2019/admin/releases/<TicketId>`
 
