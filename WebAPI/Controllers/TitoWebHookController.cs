@@ -69,8 +69,8 @@ namespace WebAPI.Controllers
             var directDiscountLink = _titoTicketDiscountLinkGenerator.DiscountTicketLink(discount);
 
             var map = new Dictionary<string, string>() {
-                    { "{firstName}", ticketCompletedEvent.First_name },
-                    { "{directDiscountLink}", directDiscountLink }
+                    { "firstName", ticketCompletedEvent.First_name },
+                    { "directDiscountLink", directDiscountLink }
                 };
 
             await _mailSender.SendAsync(ticketCompletedEvent.Email, map,
@@ -89,9 +89,9 @@ namespace WebAPI.Controllers
                 {
                     // send email to referrer to say thanks
                     map = new Dictionary<string, string>() {
-                        { "{firstName}", referrer.first_name },
-                        { "{attendee_first_name}", ticketCompletedEvent.First_name },
-                        { "{directDiscountLink}", _titoTicketDiscountLinkGenerator.DiscountTicketLink(referrerCode) }
+                        { "firstName", referrer.first_name },
+                        { "attendee_first_name", ticketCompletedEvent.First_name },
+                        { "directDiscountLink", _titoTicketDiscountLinkGenerator.DiscountTicketLink(referrerCode) }
                     };
 
                     await _mailSender.SendAsync(referrer.email, map,

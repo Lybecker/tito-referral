@@ -47,9 +47,11 @@ The configuration is validated at startup and the process will fail without a va
   "Tito": {
     "AccountName": "<ti.to account slug e.g. CNUG>",
     "ApiToken": "<API Token>",
-    "ReplyEmail": "ConfX <email@confx.com>",
-    "EmailUsername": "email@confx.com",
-    "EmailPassword": "P@ssword",
+    "FromEmail": "email@confx.com",
+    "FromName": "ConfX",
+    "GmailEmailUsername": "email@confx.com",
+    "GmailEmailPassword": P@ssword",
+    "MandrillAppApiKey": "<Your API Key>",
     "Event": {
       "EventName": "<ti.to event slug e.g. my-conf-2019>",
       "WebHookSecurityToken": "<webhook security token>",
@@ -65,6 +67,9 @@ The configuration is validated at startup and the process will fail without a va
 ```
 Be aware that slugs are case sensitive.
 
+There are two options for sending email - either via Gmail or MandrillApp. If using Gmail use GmailEmailUsername and GmailEmailPassword, if using MandrillApp use MandrillAppApiKey.
+The `Startup.cs` file controles which email sender being used via Dependency Injection. Default is MandrilApp.
+
 To find the TicketIds (called releases at API level), go to Tickets, select a ticket. The URL will include the TicketId e.g. `https://ti.to/cnug/my-conf-2019/admin/releases/<TicketId>`
 
 # ti.to setup
@@ -78,7 +83,7 @@ The system uses two HTML templates:
 - `Referral Template` send to the attendee when assigned at ticket.
 - `Referral Thanks` send to referrer when referral discount code is used.
 
-The templates are stored in EmailTemplates folder and the system expects them to be stored EmailTemplates folder and the executable root.
+The templates for Gmail are stored in EmailTemplates folder and the system expects them to be stored EmailTemplates folder and the executable root. If using MandrillApp, then use the same template names.
 
 # Running locally
 Run in locally in .NET Core CLI `dotnet run` or in Visual Studio. It starts a web server on port 5000. Test it works by browsing to `http://localhost:5000/api/titowebhook`.

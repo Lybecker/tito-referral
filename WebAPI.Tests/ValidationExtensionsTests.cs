@@ -13,9 +13,11 @@ namespace WebAPI.Tests
             {
                 AccountName = "CNUG",
                 ApiToken = "ABC123",
-                ReplyEmail = "na@na.com",
-                EmailUsername = "na",
-                EmailPassword = "P@ssword",
+                FromEmail = "na@na.com",
+                FromName = "Anders",
+                GmailEmailUsername = "na",
+                GmailEmailPassword = "P@ssword",
+                MandrillAppApiKey = "API Key",
                 Event = new Event()
                 {
                     EventName = "anders-test",
