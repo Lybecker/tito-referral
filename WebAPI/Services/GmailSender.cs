@@ -34,7 +34,7 @@ namespace WebAPI.Services
 
             foreach (var item in replaceMap)
             {
-                template = template.Replace(item.Key, item.Value, StringComparison.InvariantCultureIgnoreCase);
+                template = template.Replace($"*|{item.Key}|*", item.Value, StringComparison.InvariantCultureIgnoreCase);
             }
 
             var client = new SmtpClient
@@ -43,19 +43,18 @@ namespace WebAPI.Services
                 Port = 587,
                 UseDefaultCredentials = false,
                 EnableSsl = true,
-                Credentials = new NetworkCredential(_config.EmailUsername, _config.EmailPassword)
+                Credentials = new NetworkCredential(_config.GmailEmailUsername, _config.GmailEmailPassword)
             };
 
             var mailMessage = new MailMessage
             {
-                From = new MailAddress(_config.ReplyEmail)
+                From = new MailAddress($"{_config.FromName} <{_config.FromEmail}> "),
+                Subject = subject,
+                Body = template,
+                IsBodyHtml = true
             };
 
             mailMessage.To.Add(emailRecipient);
-            mailMessage.Subject = subject;
-            mailMessage.Body = template;
-            mailMessage.IsBodyHtml = true;
-
             try
             {
                 await client.SendMailAsync(mailMessage);

@@ -39,7 +39,7 @@ namespace WebAPI
             services.AddSingleton<ITitoRequestVerifyer, TitoRequestVerifyer>();
             services.AddSingleton<IDiscount_CodeBuilder, Discount_CodeBuilder>();
             services.AddSingleton<ITitoTicketDiscountLinkGenerator, TitoTicketDiscountLinkGenerator>();
-            services.AddSingleton<IMailSender, GmailSender>();
+            services.AddSingleton<IMailSender, MandrillSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

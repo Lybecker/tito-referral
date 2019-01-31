@@ -16,11 +16,12 @@ namespace WebAPI.Configuration
         [Required, ValidateObject]
         public Event Event { get; set; }
         [Required]
-        public string ReplyEmail { get; set; }
+        public string FromEmail { get; set; }
         [Required]
-        public string EmailUsername { get; set; }
-        [Required]
-        public string EmailPassword { get; set; }
+        public string FromName { get; set; }
+        public string GmailEmailUsername { get; set; }
+        public string GmailEmailPassword { get; set; }
+        public string MandrillAppApiKey { get; set; }
     }
 
     public class Event
